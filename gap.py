@@ -8,25 +8,24 @@ frequency = {}
 known = []
 
 # Reads in sources and updates frequency and known
-def read_in(sources):
-	# Reads in Known Words
-	update_known()
+def read_in(english_sources, translated_sources):
+	
 	# Reads in source texts
-	for source in sources:
+	for source in english_sources:
 		update_freq(word_list(source))
+
+	# Reads in Known Words
+	clear_known()
+	for source in translated_sources:
+		add_to_known(word_list(source))
+	update_known()
 
 # Update known from text file
 def update_known():
-
 	global known
 	# Reads in Known Words
-	document_text = open('data/known.txt', 'r')
-	text_string = document_text.read().lower()
-	unicode_string = unicode(text_string, "utf-8")
-	nfkd_form = unicodedata.normalize('NFKD', unicode_string)
-	only_ascii = nfkd_form.encode('ASCII', 'ignore')
-	match_pattern = re.findall(r'\b[a-z\-]{0,15}\b', only_ascii)
-	known = list(dict.fromkeys(match_pattern)) 
+	text_file = open("data/known.txt", "r")
+	known = set(text_file.readlines())
 
 # Updates global frequency dictionary and known list given a list of words
 def update_freq(word_list):
@@ -43,11 +42,9 @@ def add_to_known(word_list):
 	for word in word_list:
 		if word not in lines:
 			new_words.append(word)
-
 	with open("data/known.txt", 'a') as f:
 	    for word in new_words:
 	        f.write("%s\n" % word)
-	update_known()
 
 def clear_known():
 	os.remove("data/known.txt")

@@ -9,11 +9,13 @@ translated_sources = ["data/text1.txt", "data/text2.txt", "data/text3.txt", "dat
 sources = ["data/book1.txt", "data/book2.txt", "data/book3.txt", "data/book4.txt", 'data/book5.txt']
 
 clear_known()
-add_to_known(word_list('data/book1.txt'))
-add_to_known(word_list('data/book2.txt'))
-add_to_known(word_list('data/book3.txt'))
-add_to_known(word_list('data/book4.txt'))
-add_to_known(word_list('data/book5.txt'))
+
+add_to_known(set(word_list('data/book1.txt')))
+add_to_known(set(word_list('data/book2.txt')))
+add_to_known(set(word_list('data/book3.txt')))
+add_to_known(set(word_list('data/book4.txt')))
+add_to_known(set(word_list('data/book5.txt')))
+
 read_in(sources)
 
 #print_freq()

@@ -9,7 +9,6 @@ known = []
 
 # Reads in sources and updates frequency and known
 def read_in(sources):
-	global known, frequency
 	# Reads in Known Words
 	update_known()
 	# Reads in source texts
@@ -45,7 +44,7 @@ def add_to_known(word_list):
 		if word not in lines:
 			new_words.append(word)
 
-	with open("data/known.txt", 'w') as f:
+	with open("data/known.txt", 'a') as f:
 	    for word in new_words:
 	        f.write("%s\n" % word)
 	update_known()
@@ -64,7 +63,6 @@ def get_frequency():
 
 	return frequency
 
-
 # Returns a list of words given a text filename
 def word_list(filename):
 	document_text = open(filename, 'r')
@@ -73,17 +71,13 @@ def word_list(filename):
 	nfkd_form = unicodedata.normalize('NFKD', unicode_string)
 	only_ascii = nfkd_form.encode('ASCII', 'ignore')
 	match_pattern = re.findall(r'\b[a-z\-]{0,15}\b', only_ascii)
-	return match_pattern
+	return set(match_pattern)
 
 # Prints list of all words and their frequencies
 def print_freq():
 	global frequency
 	for key, value in sorted(frequency.items(), key=lambda item: item[1], reverse=True):
 		print("%s: %s" % (key, value))
-
-	# frequency_list = frequency.keys()
-	# for words in frequency_list:
-	# 	print words, frequency[words]
 
 # Returns the top X most critical words
 # Critical words are frequent words that 
@@ -94,7 +88,6 @@ def critical(x):
 	for w in sorted(frequency, key=frequency.get, reverse=True):
 		if count == x:
 			return critical_words
-		print w
 		if w not in known:
 			critical_words.append(w)
 			count = count + 1

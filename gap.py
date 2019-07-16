@@ -4,29 +4,28 @@ import unicodedata
 import os
 import pickle
 
-
-
 # Word Frequency Counter (word->frequency)
 frequency = {}
 known = []
 
+# Loads stored data
 pickle_in = open("freq.pickle","rb")
 frequency = pickle.load(pickle_in)
 pickle_in = open("known.pickle","rb")
 known = pickle.load(pickle_in)
 
 # Reads in sources and updates frequency and known
-def read_in(english_sources=[], translated_sources=[]):
+def read_in(english_sources, translated_sources):
 	global frequency, known
 
-	# Reads in source texts
+	# Reads in new source texts and stores
 	for source in english_sources:
 		add_to_freq(word_list(source))
 	pickle_out = open("freq.pickle","wb")
 	pickle.dump(frequency, pickle_out)
 	pickle_out.close()
 
-	# Reads in Known Words
+	# Reads in new Known Words and stores
 	for source in translated_sources:
 		add_to_known(word_list(source))
 	pickle_out = open("known.pickle","wb")
@@ -46,6 +45,7 @@ def add_to_known(word_list):
 		if word not in known:
 			known.append(word)
 
+# Clears the current dictionary of word frequencies
 def clear_freq():
 	global frequency
 	frequency = {}
@@ -53,6 +53,7 @@ def clear_freq():
 	pickle.dump(frequency, pickle_out)
 	pickle_out.close()
 
+# Clears the current list of known words
 def clear_known():
 	global known
 	known = []
@@ -66,7 +67,6 @@ def get_known():
 
 def get_frequency():
 	global frequency
-
 	return frequency
 
 # Returns a list of words given a text filename
@@ -79,15 +79,15 @@ def word_list(filename):
 	match_pattern = re.findall(r'\b[a-z\-]{0,15}\b', only_ascii)
 	return set(match_pattern)
 
-# Prints list of all words and their frequencies
-def print_freq():
+# Prints the top x list of all words and their frequencies
+def print_freq(x):
 	global frequency
 	for key, value in sorted(frequency.items(), key=lambda item: item[1], reverse=True):
 		print("%s: %s" % (key, value))
 
 # Returns the top X most critical words
 # Critical words are frequent words that 
-def critical(x):
+def critical_words(x):
 	global frequency, known
 	critical_words = []
 	count = 0
@@ -98,5 +98,13 @@ def critical(x):
 			critical_words.append(w)
 			count = count + 1
 	return critical_words
+
+# Returns a critical phrase to be translated
+def critical_phrase():
+	pass
+
+	# Should I store them in a list also? 1000, then randomly remove and return?
+	# Refresh periodically?
+
 
 

@@ -2,33 +2,39 @@ import re
 import string
 import unicodedata
 import os
+import pickle
+
+
 
 # Word Frequency Counter (word->frequency)
 frequency = {}
 known = []
 
+pickle_in = open("freq.pickle","rb")
+frequency = pickle.load(pickle_in)
+pickle_in = open("known.pickle","rb")
+known = pickle.load(pickle_in)
+
 # Reads in sources and updates frequency and known
-def read_in(english_sources, translated_sources):
-	
+def read_in(english_sources=[], translated_sources=[]):
+	global frequency, known
+
 	# Reads in source texts
 	for source in english_sources:
-		update_freq(word_list(source))
+		add_to_freq(word_list(source))
+	pickle_out = open("freq.pickle","wb")
+	pickle.dump(frequency, pickle_out)
+	pickle_out.close()
 
 	# Reads in Known Words
-	clear_known()
 	for source in translated_sources:
 		add_to_known(word_list(source))
-	update_known()
-
-# Update known from text file
-def update_known():
-	global known
-	# Reads in Known Words
-	text_file = open("data/known.txt", "r")
-	known = set(text_file.readlines())
+	pickle_out = open("known.pickle","wb")
+	pickle.dump(known, pickle_out)
+	pickle_out.close()
 
 # Updates global frequency dictionary and known list given a list of words
-def update_freq(word_list):
+def add_to_freq(word_list):
 	global frequency 
 	for word in word_list:
 	    count = frequency.get(word,0)
@@ -36,20 +42,23 @@ def update_freq(word_list):
 
 # Adds new words from word list to known
 def add_to_known(word_list):
-	new_words = []
-	text_file = open("data/known.txt", "r")
-	lines = text_file.readlines()
 	for word in word_list:
-		if word not in lines:
-			new_words.append(word)
-	with open("data/known.txt", 'a') as f:
-	    for word in new_words:
-	        f.write("%s\n" % word)
+		if word not in known:
+			known.append(word)
+
+def clear_freq():
+	global frequency
+	frequency = {}
+	pickle_out = open("freq.pickle","wb")
+	pickle.dump(frequency, pickle_out)
+	pickle_out.close()
 
 def clear_known():
-	os.remove("data/known.txt")
-	open('data/known.txt', 'a').close()
-
+	global known
+	known = []
+	pickle_out = open("known.pickle","wb")
+	pickle.dump(known, pickle_out)
+	pickle_out.close()
 
 def get_known():
 	global known
@@ -89,11 +98,5 @@ def critical(x):
 			critical_words.append(w)
 			count = count + 1
 	return critical_words
-
-
- 		
-
-
-
 
 

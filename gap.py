@@ -7,7 +7,6 @@ import os
 frequency = {}
 known = []
 
-
 # Reads in sources and updates frequency and known
 def read_in(sources):
 	global known, frequency
@@ -37,7 +36,6 @@ def update_freq(word_list):
 	    count = frequency.get(word,0)
 	    frequency[word] = count + 1
 
-
 # Adds new words from word list to known
 def add_to_known(word_list):
 	new_words = []
@@ -58,9 +56,12 @@ def clear_known():
 
 
 def get_known():
+	global known
 	return known
 
 def get_frequency():
+	global frequency
+
 	return frequency
 
 
@@ -76,19 +77,24 @@ def word_list(filename):
 
 # Prints list of all words and their frequencies
 def print_freq():
-	frequency_list = frequency.keys()
-	for words in frequency_list:
-		print words, frequency[words]
+	global frequency
+	for key, value in sorted(frequency.items(), key=lambda item: item[1], reverse=True):
+		print("%s: %s" % (key, value))
+
+	# frequency_list = frequency.keys()
+	# for words in frequency_list:
+	# 	print words, frequency[words]
 
 # Returns the top X most critical words
 # Critical words are frequent words that 
 def critical(x):
-
+	global frequency, known
 	critical_words = []
 	count = 0
 	for w in sorted(frequency, key=frequency.get, reverse=True):
 		if count == x:
 			return critical_words
+		print w
 		if w not in known:
 			critical_words.append(w)
 			count = count + 1

@@ -101,7 +101,16 @@ def critical_words(x):
 
 # Returns a critical phrase to be translated
 def critical_phrase():
-	pass
+	word = critical_words(1)[0]
+
+	# Regular expression to find sentences that contain word
+	# Should search through all text sources (randomized)
+	[^.]* critical_word [^.]*\.
+
+
+
+	print word
+
 
 	# Should I store them in a list also? 1000, then randomly remove and return?
 	# Refresh periodically?

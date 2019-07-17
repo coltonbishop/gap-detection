@@ -12,4 +12,4 @@ def load_new_data():
 	read_in(english_sources, translated_sources)
 
 
-print critical(100)
+critical_phrase()

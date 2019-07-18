@@ -3,28 +3,40 @@ import string
 import unicodedata
 import os
 import pickle
+import nltk
+from nltk import tokenize
+
 
 # Word Frequency Counter (word->frequency)
 frequency = {}
 known = []
+phrases = []
 
 # Loads stored data
 pickle_in = open("freq.pickle","rb")
 frequency = pickle.load(pickle_in)
 pickle_in = open("known.pickle","rb")
 known = pickle.load(pickle_in)
+pickle_in = open("phrases.pickle","rb")
+phrases = pickle.load(pickle_in)
 
 # Reads in sources and updates frequency and known
 def read_in(english_sources, translated_sources):
-	global frequency, known
+	global frequency, known, phrases
 
 	# Reads in new source texts and stores
 	for source in english_sources:
 		add_to_freq(word_list(source))
+		file_content = open(source).read().decode('utf8')
+		tokens = tokenize.sent_tokenize(file_content)
+		phrases.append(tokens)
+
 	pickle_out = open("freq.pickle","wb")
 	pickle.dump(frequency, pickle_out)
 	pickle_out.close()
-
+	pickle_out = open("phrases.pickle","wb")
+	pickle.dump(phrases, pickle_out)
+	pickle_out.close()
 	# Reads in new Known Words and stores
 	for source in translated_sources:
 		add_to_known(word_list(source))
@@ -69,6 +81,10 @@ def get_frequency():
 	global frequency
 	return frequency
 
+def get_phrases():
+	global phrases
+	return phrases
+
 # Returns a list of words given a text filename
 def word_list(filename):
 	document_text = open(filename, 'r')
@@ -100,18 +116,24 @@ def critical_words(x):
 	return critical_words
 
 # Returns a critical phrase to be translated
-def critical_phrase():
-	word = critical_words(1)[0]
+def critical_phrase(x=0):
+	global phrases
+
+	tally = 0
+	count = x
+	while(count < x + 4):
+		word = critical_words(x+5)[count]
+		for i in range(len(phrases)):
+		    for j in range(len(phrases[i])):
+		        if word in phrases[i][j]:
+		        	if tally == x:
+		        		return phrases[i][j]
+		        	tally = tally + 1
+		count = count + 1
 
 	# Regular expression to find sentences that contain word
 	# Should search through all text sources (randomized)
-	[^.]* critical_word [^.]*\.
-
-
-
-	print word
-
-
+	# [^.]* critical_word [^.]*\.
 	# Should I store them in a list also? 1000, then randomly remove and return?
 	# Refresh periodically?
 

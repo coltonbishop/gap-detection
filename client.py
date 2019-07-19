@@ -4,8 +4,7 @@ import sys
 
 def load_new_data():
 
-	clear_known()
-	clear_freq()
+	clear()
 	# Large corpus of english Text for Which Transled Data Does Not Yet Exist
 	english_sources = ["data/book1.txt", "data/book2.txt", "data/book3.txt"]
 	# English Text for Which Transled Data Exists
@@ -16,6 +15,8 @@ def load_new_data():
 
 # x = get_phrases()
 
-# print x[0][1000]
+load_new_data()
 
-print critical_phrase(int(sys.argv[1]))
+# print x[0][1000]
+for k in range(0,3):
+	print critical_phrase()

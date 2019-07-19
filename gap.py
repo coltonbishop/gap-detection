@@ -52,10 +52,20 @@ def add_to_freq(word_list):
 	    frequency[word] = count + 1
 
 # Adds new words from word list to known
-def add_to_known(word_list):
+def add_to_known(word_list, save=False):
 	for word in word_list:
 		if word not in known:
 			known.append(word)
+	if save:
+		pickle_out = open("known.pickle","wb")
+		pickle.dump(known, pickle_out)
+		pickle_out.close()
+
+# Clears all data structures
+def clear():
+	clear_freq()
+	clear_phrases()
+	clear_known()
 
 # Clears the current dictionary of word frequencies
 def clear_freq():
@@ -63,6 +73,14 @@ def clear_freq():
 	frequency = {}
 	pickle_out = open("freq.pickle","wb")
 	pickle.dump(frequency, pickle_out)
+	pickle_out.close()
+
+# Clears the current dictionary of word frequencies
+def clear_phrases():
+	global phrases
+	phrases = []
+	pickle_out = open("phrases.pickle","wb")
+	pickle.dump(phrases, pickle_out)
 	pickle_out.close()
 
 # Clears the current list of known words
@@ -118,15 +136,16 @@ def critical_words(x):
 # Returns a critical phrase to be translated
 def critical_phrase(x=0):
 	global phrases
-
 	tally = 0
 	count = x
-	while(count < x + 4):
-		word = critical_words(x+5)[count]
+	while(count < x + 10):
+		word = critical_words(x+11)[count]
 		for i in range(len(phrases)):
 		    for j in range(len(phrases[i])):
 		        if word in phrases[i][j]:
 		        	if tally == x:
+		        		# Later only add to known if user responds with translation
+		        		add_to_known([word], save=True)
 		        		return phrases[i][j]
 		        	tally = tally + 1
 		count = count + 1

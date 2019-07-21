@@ -150,6 +150,9 @@ def critical_phrase(x=0):
 		        	tally = tally + 1
 		count = count + 1
 
+def reg_ex():
+	pass
+
 	# Regular expression to find sentences that contain word
 	# Should search through all text sources (randomized)
 	# [^.]* critical_word [^.]*\.
